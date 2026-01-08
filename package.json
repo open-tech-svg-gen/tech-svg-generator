@@ -20,8 +20,8 @@
   "scripts": {
     "build": "tsc",
     "dev": "tsc --watch",
-    "test": "npm run build && node --test dist/**/*.test.js",
-    "prepublishOnly": "npm run build",
+    "test": "node --test dist/*.test.js",
+    "prepublishOnly": "pnpm run build",
     "demo": "node examples/demo.js"
   },
   "keywords": [
