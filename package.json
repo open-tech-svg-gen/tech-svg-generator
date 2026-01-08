@@ -1,5 +1,5 @@
 {
-  "name": "tech-svg-generator",
+  "name": "@svg-gen/tech-svg-generator",
   "version": "1.0.0",
   "description": "Generate clean, professional SVG illustrations for technical content. Perfect for blogs, documentation, and presentations.",
   "type": "module",
