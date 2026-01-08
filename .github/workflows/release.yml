@@ -3,6 +3,12 @@ name: Release
 on:
   push:
     branches: [main]
+  workflow_dispatch:
+    inputs:
+      force_publish:
+        description: 'Force publish even if version unchanged'
+        required: false
+        default: 'false'
 
 permissions:
   contents: write
@@ -56,11 +62,11 @@ jobs:
           fi
 
       - name: Publish to npm
-        if: steps.version.outputs.changed == 'true'
+        if: steps.version.outputs.changed == 'true' || github.event.inputs.force_publish == 'true'
         run: npm publish --access public --provenance
 
       - name: Create GitHub Release
-        if: steps.version.outputs.changed == 'true'
+        if: steps.version.outputs.changed == 'true' || github.event.inputs.force_publish == 'true'
         uses: softprops/action-gh-release@v1
         with:
           tag_name: v${{ steps.version.outputs.current }}
