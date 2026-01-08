@@ -39,6 +39,9 @@ jobs:
           cache: 'pnpm'
           registry-url: 'https://registry.npmjs.org'
 
+      - name: Clear npm token (use OIDC instead)
+        run: npm config delete //registry.npmjs.org/:_authToken || true
+
       - name: Install dependencies
         run: pnpm install
 
