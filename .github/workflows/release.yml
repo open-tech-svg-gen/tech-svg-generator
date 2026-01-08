@@ -38,7 +38,11 @@ jobs:
           node-version: 20
           cache: 'pnpm'
           registry-url: 'https://registry.npmjs.org'
-          token: ${{ secrets.NPM_TOKEN }}
+
+      - name: Configure npm for scoped packages
+        run: |
+          npm config set @svg-gen:registry https://registry.npmjs.org/
+          npm config set //registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}
 
       - name: Install dependencies
         run: pnpm install
