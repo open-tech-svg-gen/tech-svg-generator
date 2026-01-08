@@ -1,15 +1,21 @@
 {
   "name": "@svg-gen/tech-svg-generator",
-  "version": "1.0.0",
-  "description": "Generate clean, professional SVG illustrations for technical content. Perfect for blogs, documentation, and presentations.",
+  "version": "2.0.0",
+  "description": "Generate clean, professional SVG illustrations, cartoon strips, sequence diagrams, and flowcharts. Includes MCP server for AI integration.",
   "type": "module",
   "main": "dist/index.js",
   "module": "dist/index.js",
   "types": "dist/index.d.ts",
+  "bin": {
+    "tech-svg-mcp": "./dist/mcp-server.js"
+  },
   "exports": {
     ".": {
       "import": "./dist/index.js",
       "types": "./dist/index.d.ts"
+    },
+    "./mcp": {
+      "import": "./dist/mcp-server.js"
     }
   },
   "files": [
@@ -25,7 +31,8 @@
     "dev": "tsc --watch",
     "test": "node --test dist/*.test.js",
     "prepublishOnly": "pnpm run build",
-    "demo": "node examples/demo.js"
+    "demo": "node examples/demo.js",
+    "mcp": "node dist/mcp-server.js"
   },
   "keywords": [
     "svg",
@@ -36,7 +43,13 @@
     "diagram",
     "generator",
     "dark-theme",
-    "github-style"
+    "github-style",
+    "mcp",
+    "model-context-protocol",
+    "sequence-diagram",
+    "flowchart",
+    "cartoon",
+    "animation"
   ],
   "author": "Satishkumar Dhule",
   "license": "MIT",
@@ -60,6 +73,8 @@
     "typescript": "^5.3.0"
   },
   "dependencies": {
-    "js-yaml": "^4.1.1"
+    "@modelcontextprotocol/sdk": "^1.25.2",
+    "js-yaml": "^4.1.1",
+    "zod": "^4.3.5"
   }
 }

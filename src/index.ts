@@ -25,6 +25,34 @@ export {
   type Emotion 
 } from './characters.js';
 
+// Sequence diagrams
+export {
+  generateSequenceDiagram,
+  type SequenceDiagramConfig,
+  type Participant,
+  type Message,
+} from './sequence.js';
+
+// Flowcharts
+export {
+  generateFlowchart,
+  type FlowchartConfig,
+  type FlowNode,
+  type FlowEdge,
+  type NodeType,
+} from './flowchart.js';
+
+// Animations
+export {
+  addAnimations,
+  getAnimationKeyframes,
+  getAnimationClass,
+  staggeredAnimation,
+  ANIMATION_PRESETS,
+  type AnimationType,
+  type AnimationConfig,
+} from './animations.js';
+
 // YAML/JSON parsing
 export {
   parseYAML,
