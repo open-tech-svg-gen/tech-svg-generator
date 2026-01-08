@@ -12,9 +12,13 @@ Generate clean, professional SVG illustrations for technical content. Perfect fo
 ## Features
 
 - 🎨 **14 Scene Types** - Architecture, scaling, database, deployment, security, debugging, testing, performance, API, monitoring, frontend, success, error, and default
+- 🗨️ **Cartoon Strips** - Generate comic-style strips with characters, emotions, and speech bubbles
+- 📝 **YAML/JSON Support** - Define scenes and cartoons in declarative format
 - 🔍 **Auto-Detection** - Automatically selects the best scene based on title keywords
 - 🌙 **Multiple Themes** - GitHub Dark (default), Dracula, Nord, One Dark
-- 📦 **Zero Dependencies** - Pure TypeScript, no external runtime dependencies
+- 👤 **6 Character Presets** - Diverse developer characters with customizable styles
+- 😀 **9 Emotions** - Neutral, happy, sad, angry, surprised, thinking, confused, excited, worried
+- 📦 **Minimal Dependencies** - Only js-yaml for YAML parsing
 - 🖼️ **Consistent Style** - Professional, clean illustrations every time
 - ✏️ **Monospace Fonts** - All text uses developer-friendly monospace fonts
 
@@ -157,6 +161,155 @@ The generated SVGs feature:
 - Contextual icons and metrics
 - Multi-line title support for long titles
 - Consistent monospace typography
+
+## Cartoon Strips
+
+Generate comic-style strips with characters having conversations!
+
+### Quick Start
+
+```typescript
+import { generateCartoonStrip } from 'tech-svg-generator';
+import fs from 'fs';
+
+const svg = generateCartoonStrip({
+  title: 'The Daily Standup',
+  theme: 'github-dark',
+  width: 800,
+  height: 400,
+  layout: '2x1',
+  characters: {
+    dev: { name: 'Developer', preset: 'dev1' },
+    pm: { name: 'PM', preset: 'dev2' }
+  },
+  panels: [
+    {
+      characters: ['dev', 'pm'],
+      caption: 'Monday morning...',
+      dialogue: [
+        { character: 'pm', text: 'How is the feature going?', emotion: 'neutral' },
+        { character: 'dev', text: 'Almost done!', emotion: 'happy' }
+      ]
+    },
+    {
+      characters: ['dev', 'pm'],
+      caption: 'Friday...',
+      dialogue: [
+        { character: 'dev', text: 'Shipped!', emotion: 'excited' },
+        { character: 'pm', text: 'Great work!', emotion: 'happy' }
+      ]
+    }
+  ]
+});
+
+fs.writeFileSync('standup.svg', svg);
+```
+
+### Character Presets
+
+| Preset | Description |
+|--------|-------------|
+| `dev1` | Indigo hair, blue shirt, glasses |
+| `dev2` | Purple curly hair, green shirt |
+| `dev3` | Blonde long hair, red shirt, headphones |
+| `dev4` | Dark spiky hair, indigo shirt |
+| `dev5` | Pink short hair, purple shirt, hat |
+| `robot` | Gray robot character |
+
+### Emotions
+
+Characters can express: `neutral`, `happy`, `sad`, `angry`, `surprised`, `thinking`, `confused`, `excited`, `worried`
+
+### Speech Bubble Types
+
+- `speech` (default) - Regular speech bubble
+- `thought` - Cloud-style thought bubble
+- `shout` - Spiky exclamation bubble
+
+### Layout Options
+
+- `auto` - Automatically arrange panels
+- `1x2`, `2x1` - Single row/column
+- `2x2` - 2x2 grid
+- `3x1`, `1x3` - Three panels in row/column
+- `2x3`, `3x2` - Six panel layouts
+
+## YAML/JSON Scene Descriptions
+
+Define scenes and cartoons in declarative YAML or JSON format!
+
+### Scene from YAML
+
+```typescript
+import { generateFromYAML } from 'tech-svg-generator';
+
+const yaml = `
+type: scene
+title: "Database Migration Strategy"
+content: "PostgreSQL replication and failover"
+scene: database
+theme: github-dark
+width: 700
+height: 420
+`;
+
+const svg = generateFromYAML(yaml);
+```
+
+### Cartoon from YAML
+
+```typescript
+import { generateFromYAML } from 'tech-svg-generator';
+
+const yaml = `
+type: cartoon
+title: "Code Review"
+theme: dracula
+layout: "2x1"
+
+characters:
+  alice:
+    name: Alice
+    preset: dev1
+  bob:
+    name: Bob
+    preset: dev2
+
+panels:
+  - characters: [alice, bob]
+    dialogue:
+      - character: alice
+        text: "Can you review my PR?"
+        emotion: happy
+      - character: bob
+        text: "Sure!"
+        emotion: neutral
+`;
+
+const svg = generateFromYAML(yaml);
+```
+
+### JSON Support
+
+```typescript
+import { generateFromJSON } from 'tech-svg-generator';
+
+const json = JSON.stringify({
+  type: 'cartoon',
+  title: 'Debugging',
+  characters: {
+    dev: { name: 'Dev', preset: 'dev1' }
+  },
+  panels: [{
+    characters: ['dev'],
+    dialogue: [
+      { character: 'dev', text: 'Found it!', emotion: 'excited' }
+    ]
+  }]
+});
+
+const svg = generateFromJSON(json);
+```
 
 ## License
 

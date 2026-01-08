@@ -5,8 +5,37 @@
  * @packageDocumentation
  */
 
+// Core generation
 export { generateSVG, generateIllustration, detectScene, getAvailableScenes } from './generator.js';
 export { SCENES } from './scenes.js';
-export { THEMES, type Theme, type ThemeColors } from './themes.js';
+export { THEMES, getTheme, type Theme, type ThemeColors } from './themes.js';
 export { ICONS } from './icons.js';
 export type { GenerateOptions, GenerateResult, SceneType } from './types.js';
+
+// Cartoon strip generation
+export { generateCartoonStrip, type CartoonStripConfig, type CartoonPanel, type DialogLine } from './cartoon.js';
+export { 
+  renderCharacter, 
+  createCharacter, 
+  getCharacterPresets, 
+  getEmotions,
+  CHARACTER_PRESETS,
+  type Character, 
+  type CharacterStyle, 
+  type Emotion 
+} from './characters.js';
+
+// YAML/JSON parsing
+export {
+  parseYAML,
+  parseJSON,
+  generateFromYAML,
+  generateFromJSON,
+  generateFromDescription,
+  SCENE_YAML_EXAMPLE,
+  CARTOON_YAML_EXAMPLE,
+  CARTOON_JSON_EXAMPLE,
+  type SceneDescription,
+  type CartoonDescription,
+  type Description,
+} from './parser.js';
