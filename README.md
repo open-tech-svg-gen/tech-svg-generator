@@ -209,12 +209,16 @@ fs.writeFileSync('standup.svg', svg);
 
 | Preset | Description |
 |--------|-------------|
-| `dev1` | Indigo hair, blue shirt, glasses |
-| `dev2` | Purple curly hair, green shirt |
-| `dev3` | Blonde long hair, red shirt, headphones |
-| `dev4` | Dark spiky hair, indigo shirt |
-| `dev5` | Pink short hair, purple shirt, hat |
-| `robot` | Gray robot character |
+| `alex` | Indigo short hair, blue hoodie, glasses |
+| `sam` | Purple curly hair, green t-shirt |
+| `jordan` | Blonde long hair, red shirt, headphones |
+| `casey` | Dark spiky hair, purple hoodie |
+| `riley` | Pink ponytail, indigo t-shirt |
+| `morgan` | Teal mohawk, orange hoodie, sunglasses |
+| `taylor` | Red short hair, dark formal attire |
+| `robot` | Gray robot character with blue accents |
+
+Legacy aliases (`dev1`-`dev5`) are also supported for backward compatibility.
 
 ### Emotions
 

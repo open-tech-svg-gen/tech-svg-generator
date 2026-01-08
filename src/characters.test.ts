@@ -45,14 +45,14 @@ describe('createCharacter', () => {
     assert.deepStrictEqual(char.style, CHARACTER_PRESETS.dev1);
   });
 
-  it('should use dev1 as default preset', () => {
+  it('should use alex as default preset', () => {
     const char = createCharacter('test', 'Test');
-    assert.deepStrictEqual(char.style, CHARACTER_PRESETS.dev1);
+    assert.deepStrictEqual(char.style, CHARACTER_PRESETS.alex);
   });
 
-  it('should fallback to dev1 for unknown preset', () => {
+  it('should fallback to alex for unknown preset', () => {
     const char = createCharacter('test', 'Test', 'unknown-preset');
-    assert.deepStrictEqual(char.style, CHARACTER_PRESETS.dev1);
+    assert.deepStrictEqual(char.style, CHARACTER_PRESETS.alex);
   });
 
   it('should accept custom style object', () => {
@@ -62,6 +62,8 @@ describe('createCharacter', () => {
       skin: '#ffcc99',
       hairStyle: 'spiky' as const,
       accessory: 'glasses' as const,
+      eyeColor: '#0000ff',
+      shirtStyle: 'tshirt' as const,
     };
     const char = createCharacter('test', 'Test', customStyle);
     assert.deepStrictEqual(char.style, customStyle);

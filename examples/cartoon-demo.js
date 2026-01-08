@@ -24,13 +24,13 @@ console.log('1. Generating cartoon strip via API...');
 const strip1 = generateCartoonStrip({
   title: 'The Daily Standup',
   theme: 'github-dark',
-  width: 900,
-  height: 500,
+  width: 1000,
+  height: 450,
   layout: '3x1',
   characters: {
-    pm: { name: 'PM', preset: 'dev1' },
-    dev: { name: 'Dev', preset: 'dev2' },
-    qa: { name: 'QA', preset: 'dev3' }
+    pm: { name: 'PM', preset: 'taylor' },
+    dev: { name: 'Dev', preset: 'alex' },
+    qa: { name: 'QA', preset: 'jordan' }
   },
   panels: [
     {
@@ -70,13 +70,13 @@ type: cartoon
 title: "Rubber Duck Debugging"
 theme: dracula
 width: 800
-height: 450
+height: 400
 layout: "2x1"
 
 characters:
   dev:
     name: Developer
-    preset: dev4
+    preset: casey
   duck:
     name: Duck
     preset: robot
@@ -113,12 +113,12 @@ console.log('3. Generating code review cartoon...');
 const strip3 = generateCartoonStrip({
   title: 'The Code Review',
   theme: 'nord',
-  width: 800,
-  height: 600,
+  width: 900,
+  height: 550,
   layout: '2x2',
   characters: {
-    senior: { name: 'Senior Dev', preset: 'dev1' },
-    junior: { name: 'Junior Dev', preset: 'dev5' }
+    senior: { name: 'Senior Dev', preset: 'sam' },
+    junior: { name: 'Junior Dev', preset: 'riley' }
   },
   panels: [
     {

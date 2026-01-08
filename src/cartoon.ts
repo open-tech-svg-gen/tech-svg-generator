@@ -231,9 +231,10 @@ function renderPanel(
     content += `<text x="${x + width/2}" y="${y + 18}" text-anchor="middle" fill="${colors.muted}" font-size="10" font-family="${FONT}">${escapeHtml(panel.caption)}</text>`;
   }
   
-  // Position characters
-  const charY = y + height - 80;
+  // Position characters - adjusted for new larger character design
+  const charY = y + height - 100;
   const charSpacing = width / (charCount + 1);
+  const charScale = Math.min(0.7, (height - 150) / 180); // Scale based on panel height
   
   panelChars.forEach((char, i) => {
     const charX = x + charSpacing * (i + 1);
@@ -243,12 +244,13 @@ function renderPanel(
     const charDialogue = panel.dialogue.find(d => d.character === char.id);
     const emotion = charDialogue?.emotion || 'neutral';
     
-    content += renderCharacter(charX, charY, char, emotion, 0.8, facing);
+    content += renderCharacter(charX, charY, char, emotion, charScale, facing);
   });
   
-  // Render dialogue bubbles
-  const dialogueY = y + 50;
-  const bubbleSpacing = Math.min(100, (height - 120) / Math.max(panel.dialogue.length, 1));
+  // Render dialogue bubbles - positioned above characters
+  const dialogueStartY = y + (panel.caption ? 35 : 20);
+  const dialogueEndY = charY - 60 * charScale;
+  const bubbleSpacing = Math.min(70, (dialogueEndY - dialogueStartY) / Math.max(panel.dialogue.length, 1));
   
   panel.dialogue.forEach((line, i) => {
     const charIndex = panelChars.findIndex(c => c.id === line.character);
@@ -256,8 +258,7 @@ function renderPanel(
     
     const charX = x + charSpacing * (charIndex + 1);
     const bubbleX = charX;
-    const bubbleY = dialogueY + i * bubbleSpacing;
-    const tailDir = charIndex < charCount / 2 ? 'left' : 'right';
+    const bubbleY = dialogueStartY + 25 + i * bubbleSpacing;
     
     content += speechBubble(
       bubbleX,
@@ -266,7 +267,7 @@ function renderPanel(
       colors,
       line.type || 'speech',
       'down',
-      width * 0.7
+      width * 0.65
     );
   });
   
