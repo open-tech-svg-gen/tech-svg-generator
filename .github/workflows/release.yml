@@ -39,11 +39,6 @@ jobs:
           cache: 'pnpm'
           registry-url: 'https://registry.npmjs.org'
 
-      - name: Configure npm for scoped packages
-        run: |
-          npm config set @svg-gen:registry https://registry.npmjs.org/
-          npm config set //registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}
-
       - name: Install dependencies
         run: pnpm install
 
@@ -90,8 +85,6 @@ jobs:
       - name: Publish to npm
         if: steps.version.outputs.changed == 'true' || github.event.inputs.force_publish == 'true'
         run: npm publish --access public --provenance
-        env:
-          NPM_CONFIG_PROVENANCE: true
 
       - name: Create GitHub Release
         if: steps.version.outputs.changed == 'true' || github.event.inputs.force_publish == 'true'
