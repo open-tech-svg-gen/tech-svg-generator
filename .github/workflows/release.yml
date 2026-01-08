@@ -73,9 +73,21 @@ jobs:
           echo "Checking index.js..."
           head -5 dist/index.js
 
+      - name: Check npm configuration
+        run: |
+          echo "NPM version:"
+          npm --version
+          echo "NPM config:"
+          npm config list
+          echo "Registry:"
+          npm config get registry
+
       - name: Publish to npm
         if: steps.version.outputs.changed == 'true' || github.event.inputs.force_publish == 'true'
         run: npm publish --access public --provenance
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NPM_CONFIG_PROVENANCE: true
 
       - name: Create GitHub Release
         if: steps.version.outputs.changed == 'true' || github.event.inputs.force_publish == 'true'
