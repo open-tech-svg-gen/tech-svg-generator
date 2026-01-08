@@ -2,8 +2,12 @@
 
 Generate clean, professional SVG illustrations for technical content. Perfect for blogs, documentation, presentations, and README files.
 
-![npm version](https://img.shields.io/npm/v/tech-svg-generator)
-![license](https://img.shields.io/npm/l/tech-svg-generator)
+[![CI](https://github.com/open-tech-svg-gen/tech-svg-generator/actions/workflows/ci.yml/badge.svg)](https://github.com/open-tech-svg-gen/tech-svg-generator/actions/workflows/ci.yml)
+[![npm version](https://img.shields.io/npm/v/tech-svg-generator)](https://www.npmjs.com/package/tech-svg-generator)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.3-blue.svg)](https://www.typescriptlang.org/)
+[![Node.js](https://img.shields.io/badge/Node.js-%3E%3D18-green.svg)](https://nodejs.org/)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/open-tech-svg-gen/tech-svg-generator/pulls)
 
 ## Features
 
