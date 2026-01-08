@@ -47,22 +47,21 @@ export interface CartoonStripConfig {
 }
 
 /**
- * Render a speech bubble
+ * Render a WhatsApp-style message bubble - OPTIMIZED
  */
-function speechBubble(
+function whatsappMessage(
   x: number,
   y: number,
   text: string,
   colors: ThemeColors,
-  type: 'speech' | 'thought' | 'shout' = 'speech',
-  tailDirection: 'left' | 'right' | 'down' = 'down',
-  maxWidth: number = 180
+  isFromUser: boolean,
+  maxWidth: number = 220
 ): string {
-  // Word wrap text
+  // Word wrap text - more aggressive for compact bubbles
   const words = text.split(' ');
   const lines: string[] = [];
   let currentLine = '';
-  const charsPerLine = Math.floor(maxWidth / 7);
+  const charsPerLine = Math.floor(maxWidth / 6.2);
   
   for (const word of words) {
     if ((currentLine + ' ' + word).trim().length <= charsPerLine) {
@@ -74,92 +73,69 @@ function speechBubble(
   }
   if (currentLine) lines.push(currentLine);
   
-  // Limit lines
-  if (lines.length > 4) {
-    lines.length = 4;
-    lines[3] = lines[3].substring(0, charsPerLine - 3) + '...';
+  // Limit to 3 lines (more compact)
+  if (lines.length > 3) {
+    lines.length = 3;
+    lines[2] = lines[2].substring(0, Math.max(charsPerLine - 3, 8)) + '...';
   }
   
-  const lineHeight = 16;
-  const padding = 12;
-  const bubbleWidth = Math.min(maxWidth, Math.max(...lines.map(l => l.length * 7)) + padding * 2);
-  const bubbleHeight = lines.length * lineHeight + padding * 2;
+  const lineHeight = 12;
+  const paddingX = 10;
+  const paddingY = 6;
+  const bubbleWidth = Math.min(maxWidth, Math.max(...lines.map(l => l.length * 6.2)) + paddingX * 2);
+  const bubbleHeight = lines.length * lineHeight + paddingY * 2;
   
-  let bubblePath: string;
-  let tailPath: string;
+  // WhatsApp colors
+  const bgColor = isFromUser ? colors.orange : colors.card;
+  const textColor = isFromUser ? '#fff' : colors.text;
+  const borderColor = isFromUser ? colors.orange : colors.border;
   
-  if (type === 'thought') {
-    // Thought bubble with cloud shape
-    bubblePath = `
-      <ellipse cx="${x}" cy="${y}" rx="${bubbleWidth/2}" ry="${bubbleHeight/2}" fill="${colors.card}" stroke="${colors.border}" stroke-width="2"/>
-    `;
-    const tailX = tailDirection === 'left' ? x - bubbleWidth/2 - 5 : tailDirection === 'right' ? x + bubbleWidth/2 + 5 : x;
-    const tailY = y + bubbleHeight/2 + 10;
-    tailPath = `
-      <circle cx="${tailX}" cy="${tailY}" r="6" fill="${colors.card}" stroke="${colors.border}" stroke-width="2"/>
-      <circle cx="${tailX + (tailDirection === 'left' ? -8 : tailDirection === 'right' ? 8 : 0)}" cy="${tailY + 12}" r="4" fill="${colors.card}" stroke="${colors.border}" stroke-width="2"/>
-    `;
-  } else if (type === 'shout') {
-    // Spiky shout bubble
-    const spikes = 8;
-    const innerR = Math.min(bubbleWidth, bubbleHeight) / 2;
-    const outerR = innerR * 1.3;
-    let points = '';
-    for (let i = 0; i < spikes * 2; i++) {
-      const angle = (i * Math.PI) / spikes;
-      const r = i % 2 === 0 ? outerR : innerR;
-      const px = x + r * Math.cos(angle - Math.PI/2);
-      const py = y + r * Math.sin(angle - Math.PI/2) * (bubbleHeight/bubbleWidth);
-      points += `${px},${py} `;
-    }
-    bubblePath = `<polygon points="${points.trim()}" fill="${colors.card}" stroke="${colors.orange}" stroke-width="2"/>`;
-    tailPath = '';
+  // Bubble position (right-aligned for user, left-aligned for other)
+  const bubbleX = isFromUser ? x - bubbleWidth - 6 : x + 6;
+  const bubbleY = y - bubbleHeight / 2;
+  
+  // Rounded rectangle
+  const rx = 14;
+  let bubblePath = `<rect x="${bubbleX}" y="${bubbleY}" width="${bubbleWidth}" height="${bubbleHeight}" rx="${rx}" fill="${bgColor}" stroke="${borderColor}" stroke-width="1"/>`;
+  
+  // Tail
+  let tailPath = '';
+  if (isFromUser) {
+    // Right tail
+    tailPath = `<polygon points="${bubbleX + bubbleWidth},${bubbleY + bubbleHeight - 6} ${bubbleX + bubbleWidth + 5},${bubbleY + bubbleHeight} ${bubbleX + bubbleWidth},${bubbleY + bubbleHeight}" fill="${bgColor}"/>`;
   } else {
-    // Regular speech bubble
-    const rx = 12;
-    bubblePath = `<rect x="${x - bubbleWidth/2}" y="${y - bubbleHeight/2}" width="${bubbleWidth}" height="${bubbleHeight}" rx="${rx}" fill="${colors.card}" stroke="${colors.border}" stroke-width="2"/>`;
-    
-    // Tail pointing to speaker
-    const tailSize = 12;
-    let tx: number, ty: number, t1x: number, t1y: number, t2x: number, t2y: number;
-    
-    if (tailDirection === 'left') {
-      tx = x - bubbleWidth/2 - tailSize;
-      ty = y + bubbleHeight/4;
-      t1x = x - bubbleWidth/2;
-      t1y = y;
-      t2x = x - bubbleWidth/2;
-      t2y = y + bubbleHeight/4;
-    } else if (tailDirection === 'right') {
-      tx = x + bubbleWidth/2 + tailSize;
-      ty = y + bubbleHeight/4;
-      t1x = x + bubbleWidth/2;
-      t1y = y;
-      t2x = x + bubbleWidth/2;
-      t2y = y + bubbleHeight/4;
-    } else {
-      tx = x;
-      ty = y + bubbleHeight/2 + tailSize;
-      t1x = x - 8;
-      t1y = y + bubbleHeight/2;
-      t2x = x + 8;
-      t2y = y + bubbleHeight/2;
-    }
-    tailPath = `<polygon points="${t1x},${t1y} ${tx},${ty} ${t2x},${t2y}" fill="${colors.card}" stroke="${colors.border}" stroke-width="2"/>
-                <line x1="${t1x}" y1="${t1y}" x2="${t2x}" y2="${t2y}" stroke="${colors.card}" stroke-width="4"/>`;
+    // Left tail
+    tailPath = `<polygon points="${bubbleX},${bubbleY + bubbleHeight - 6} ${bubbleX - 5},${bubbleY + bubbleHeight} ${bubbleX},${bubbleY + bubbleHeight}" fill="${bgColor}"/>`;
   }
   
+  // Text content
   const textContent = lines.map((line, i) => 
-    `<text x="${x}" y="${y - (lines.length - 1) * lineHeight/2 + i * lineHeight + 5}" text-anchor="middle" fill="${colors.text}" font-size="12" font-family="${FONT}">${escapeHtml(line)}</text>`
+    `<text x="${bubbleX + bubbleWidth/2}" y="${bubbleY + paddingY + 2 + i * lineHeight}" text-anchor="middle" fill="${textColor}" font-size="10" font-family="${FONT}" font-weight="500">${escapeHtml(line)}</text>`
   ).join('');
   
   return `
-    <g class="speech-bubble">
+    <g class="whatsapp-message">
       ${bubblePath}
       ${tailPath}
       ${textContent}
     </g>
   `;
+}
+
+/**
+ * Render a speech bubble (legacy)
+ */
+function speechBubble(
+  x: number,
+  y: number,
+  text: string,
+  colors: ThemeColors,
+  type: 'speech' | 'thought' | 'shout' = 'speech',
+  tailDirection: 'left' | 'right' | 'down' = 'down',
+  maxWidth: number = 140
+): string {
+  // Use WhatsApp style instead
+  return whatsappMessage(x, y, text, colors, false, maxWidth);
 }
 
 /**
@@ -206,7 +182,7 @@ function calculateLayout(
 }
 
 /**
- * Render a single panel
+ * Render a single panel - COMIC STYLE with speech bubbles above characters
  */
 function renderPanel(
   panel: CartoonPanel,
@@ -223,55 +199,139 @@ function renderPanel(
   
   // Panel background
   let content = `
-    <rect x="${x}" y="${y}" width="${width}" height="${height}" rx="8" fill="${colors.elevated}" stroke="${colors.border}" stroke-width="2"/>
+    <rect x="${x}" y="${y}" width="${width}" height="${height}" rx="6" fill="${colors.elevated}" stroke="${colors.border}" stroke-width="2"/>
   `;
   
-  // Caption if present
+  // Caption at top center
   if (panel.caption) {
-    content += `<text x="${x + width/2}" y="${y + 18}" text-anchor="middle" fill="${colors.muted}" font-size="10" font-family="${FONT}">${escapeHtml(panel.caption)}</text>`;
+    content += `<text x="${x + width/2}" y="${y + 14}" text-anchor="middle" fill="${colors.muted}" font-size="9" font-family="${FONT}" font-weight="bold">${escapeHtml(panel.caption)}</text>`;
   }
   
-  // Position characters - adjusted for new larger character design
-  const charY = y + height - 100;
-  const charSpacing = width / (charCount + 1);
-  const charScale = Math.min(0.7, (height - 150) / 180); // Scale based on panel height
+  const captionHeight = panel.caption ? 18 : 4;
   
-  panelChars.forEach((char, i) => {
-    const charX = x + charSpacing * (i + 1);
-    const facing = i < charCount / 2 ? 'right' : 'left';
-    
-    // Find emotion for this character in dialogue
-    const charDialogue = panel.dialogue.find(d => d.character === char.id);
-    const emotion = charDialogue?.emotion || 'neutral';
-    
-    content += renderCharacter(charX, charY, char, emotion, charScale, facing);
+  // Calculate character scale to fill panel nicely
+  // Base character is ~170px tall, we want it to fill ~60% of panel height
+  const availableHeight = height - captionHeight - 20;
+  const targetCharHeight = availableHeight * 0.65;
+  const charScale = Math.min(1.2, targetCharHeight / 170);
+  
+  // Position characters at bottom center of panel
+  const charY = y + height - 30 - (85 * charScale); // 85 is bottom of character (name tag)
+  const charSpacing = width / (charCount + 1);
+  
+  // Group dialogue by character
+  const dialogueByChar = new Map<string, DialogLine[]>();
+  panel.dialogue.forEach(line => {
+    if (!dialogueByChar.has(line.character)) {
+      dialogueByChar.set(line.character, []);
+    }
+    dialogueByChar.get(line.character)!.push(line);
   });
   
-  // Render dialogue bubbles - positioned above characters
-  const dialogueStartY = y + (panel.caption ? 35 : 20);
-  const dialogueEndY = charY - 60 * charScale;
-  const bubbleSpacing = Math.min(70, (dialogueEndY - dialogueStartY) / Math.max(panel.dialogue.length, 1));
-  
-  panel.dialogue.forEach((line, i) => {
-    const charIndex = panelChars.findIndex(c => c.id === line.character);
-    if (charIndex === -1) return;
+  // Render each character with their speech bubble above them
+  panelChars.forEach((char, i) => {
+    const charX = x + charSpacing * (i + 1);
+    const facing = charCount > 1 ? (i < charCount / 2 ? 'right' : 'left') : 'right';
     
-    const charX = x + charSpacing * (charIndex + 1);
+    // Get emotion from dialogue
+    const charDialogue = dialogueByChar.get(char.id) || [];
+    const emotion = charDialogue[0]?.emotion || 'neutral';
+    
+    // Render character
+    content += renderCharacter(charX, charY, char, emotion, charScale, facing);
+    
+    // Render speech bubbles above this character
     const bubbleX = charX;
-    const bubbleY = dialogueStartY + 25 + i * bubbleSpacing;
+    const bubbleStartY = y + captionHeight + 15;
+    const charTopY = charY - (36 * charScale); // Top of character head
+    const availableBubbleSpace = charTopY - bubbleStartY - 20;
+    const bubbleSpacing = Math.min(50, availableBubbleSpace / Math.max(charDialogue.length, 1));
     
-    content += speechBubble(
-      bubbleX,
-      bubbleY,
-      line.text,
-      colors,
-      line.type || 'speech',
-      'down',
-      width * 0.65
-    );
+    charDialogue.forEach((line, lineIdx) => {
+      const bubbleY = bubbleStartY + lineIdx * bubbleSpacing;
+      
+      if (bubbleY < charTopY - 30) {
+        content += renderSpeechBubble(
+          bubbleX,
+          bubbleY,
+          line.text,
+          colors,
+          line.type || 'speech',
+          Math.min(width * 0.45, 200)
+        );
+      }
+    });
   });
   
   return content;
+}
+
+/**
+ * Render a clean speech bubble positioned above character
+ */
+function renderSpeechBubble(
+  x: number,
+  y: number,
+  text: string,
+  colors: ThemeColors,
+  type: 'speech' | 'thought' | 'shout' = 'speech',
+  maxWidth: number = 180
+): string {
+  // Word wrap
+  const words = text.split(' ');
+  const lines: string[] = [];
+  let currentLine = '';
+  const charsPerLine = Math.floor(maxWidth / 7.5);
+  
+  for (const word of words) {
+    if ((currentLine + ' ' + word).trim().length <= charsPerLine) {
+      currentLine = (currentLine + ' ' + word).trim();
+    } else {
+      if (currentLine) lines.push(currentLine);
+      currentLine = word;
+    }
+  }
+  if (currentLine) lines.push(currentLine);
+  
+  if (lines.length > 3) {
+    lines.length = 3;
+    lines[2] = lines[2].substring(0, Math.max(charsPerLine - 3, 8)) + '...';
+  }
+  
+  const lineHeight = 15;
+  const paddingX = 12;
+  const paddingY = 8;
+  const bubbleWidth = Math.min(maxWidth, Math.max(...lines.map(l => l.length * 7.5)) + paddingX * 2);
+  const bubbleHeight = lines.length * lineHeight + paddingY * 2;
+  
+  const bubbleX = x - bubbleWidth / 2;
+  const bubbleY = y;
+  
+  let bgColor = colors.card;
+  let borderColor = colors.border;
+  let textColor = colors.text;
+  
+  if (type === 'shout') {
+    bgColor = colors.orange;
+    borderColor = colors.orange;
+    textColor = '#fff';
+  }
+  
+  // Bubble with tail pointing down
+  const tailX = x;
+  const tailY = bubbleY + bubbleHeight;
+  
+  const bubble = `
+    <rect x="${bubbleX}" y="${bubbleY}" width="${bubbleWidth}" height="${bubbleHeight}" rx="10" fill="${bgColor}" stroke="${borderColor}" stroke-width="2"/>
+    <polygon points="${tailX - 6},${tailY - 1} ${tailX + 6},${tailY - 1} ${tailX},${tailY + 10}" fill="${bgColor}" stroke="${borderColor}" stroke-width="2"/>
+    <rect x="${tailX - 8}" y="${tailY - 3}" width="16" height="5" fill="${bgColor}"/>
+  `;
+  
+  const textContent = lines.map((line, i) => 
+    `<text x="${x}" y="${bubbleY + paddingY + 11 + i * lineHeight}" text-anchor="middle" fill="${textColor}" font-size="12" font-family="${FONT}" font-weight="600">${escapeHtml(line)}</text>`
+  ).join('');
+  
+  return `<g class="speech-bubble">${bubble}${textContent}</g>`;
 }
 
 /**
