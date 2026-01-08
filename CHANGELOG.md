@@ -1,3 +1,15 @@
+# 1.0.0 (2026-01-08)
+
+
+### Bug Fixes
+
+* update test script to work with pnpm ([04aa06a](https://github.com/open-tech-svg-gen/tech-svg-generator/commit/04aa06a57b3c47ea209ec8bbceb39bb9acb86bfb))
+
+
+### Features
+
+* add GitHub Actions, semantic-release, and open source essentials ([96efd43](https://github.com/open-tech-svg-gen/tech-svg-generator/commit/96efd4371ceca1a46678b0633d5f47ccbf0f528b))
+
 # Changelog
 
 All notable changes to this project will be documented in this file.
