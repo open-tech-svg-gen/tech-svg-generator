@@ -45,6 +45,9 @@ jobs:
       - name: Build
         run: pnpm run build
 
+      - name: Make MCP server executable
+        run: chmod +x dist/mcp-server.js
+
       - name: Run tests
         run: pnpm test
 
@@ -60,6 +63,15 @@ jobs:
           else
             echo "changed=false" >> $GITHUB_OUTPUT
           fi
+
+      - name: Verify build output
+        run: |
+          echo "Checking dist directory..."
+          ls -la dist/ | head -20
+          echo "Checking mcp-server.js..."
+          head -5 dist/mcp-server.js
+          echo "Checking index.js..."
+          head -5 dist/index.js
 
       - name: Publish to npm
         if: steps.version.outputs.changed == 'true' || github.event.inputs.force_publish == 'true'
